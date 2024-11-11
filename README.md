@@ -20,3 +20,5 @@ Put manga id in manga_id, optionally put a number of images to cut from end
 manga_id = 1
 imgs_to_cut = 0
 #---------------
+```
+Run script, folder with images will be created at scripts location

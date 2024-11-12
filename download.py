@@ -3,9 +3,12 @@ import os
 from bs4 import BeautifulSoup
 
 #Pages count
+#------------------------------
 manga_id = 537501
-URL = "https://nhentai.net/g/%d/" % manga_id
 imgs_to_cut = 0
+#------------------------------
+
+URL = "https://nhentai.net/g/%d/" % manga_id
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
 

@@ -5,8 +5,8 @@ import concurrent.futures
 import time
 #Pages count
 #------------------------------
-manga_id = 439211
-imgs_to_cut = 1
+manga_id = 0
+imgs_to_cut = 0
 #------------------------------
 
 URL = "https://nhentai.net/g/%d/" % manga_id
@@ -53,7 +53,7 @@ def image_parser(page_number):
     dr = ab.find("img")["src"]
     return(dr)
 
-for i in range(1,int(pages)+1):
+for i in range(1,int(pages)+ 1 - imgs_to_cut):
     pages_numbers.append(i)
 
 def new_download(page):

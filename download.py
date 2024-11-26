@@ -1,16 +1,21 @@
 import requests
 import os
 from bs4 import BeautifulSoup
-
+import concurrent.futures
+import time
 #Pages count
 #------------------------------
-manga_id = 537501
-imgs_to_cut = 0
+manga_id = 439211
+imgs_to_cut = 1
 #------------------------------
 
 URL = "https://nhentai.net/g/%d/" % manga_id
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
+
+
+all_urls = []
+pages_numbers = []
 
 #Pretty name
 info = soup.find(id="info")  
@@ -39,7 +44,7 @@ def download_image(url, save_as, image_number):
     else:
         print("Error Downloading Image")
 
-def image_parser(manga_id, page_number):
+def image_parser(page_number):
     image_url = "https://nhentai.net/g/%d/%d/" % (manga_id, page_number)
     page = requests.get(image_url)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -47,12 +52,18 @@ def image_parser(manga_id, page_number):
     ab = page.find("section", id="image-container")
     dr = ab.find("img")["src"]
     return(dr)
-image_parser(manga_id, 1)
 
-def initiate_download(id):
-    create_manga_folder(title)
-    for aboba in range(1,int(pages)+1-imgs_to_cut):
-        save_as = '%s/%d.jpg' % (title, aboba)
-        download_image(image_parser(id, aboba), save_as, aboba)
+for i in range(1,int(pages)+1):
+    pages_numbers.append(i)
 
-initiate_download(manga_id)
+def new_download(page):
+    urlq = image_parser(page)
+    download_image(urlq, '%s/%d.jpg' % (title, page), page)
+
+create_manga_folder(title)
+start_time = time.time()
+with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    executor.map(new_download, pages_numbers)
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Elapsed time: {elapsed_time:.3f}s")
